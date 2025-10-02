@@ -1,0 +1,67 @@
+Observer Design Pattern Documentation
+
+Observer Design Pattern
+
+The Observer Design Pattern defines a one-to-many dependency between objects so that when one object the Subject changes state, all its dependents the Observers are notified and updated automatically. It promotes a loosely coupled architecture, allowing the Subject and Observers to operate independently without knowing the concrete details of each other.
+
+Adapted Example: SaaS Pricing Update System
+
+The provided TypeScript code implements the Observer pattern to manage and propagate SaaS pricing updates across various dependent systems and customers.
+
+Key components and their roles:
+
+Subject Publisher: PricingManager
+Holds the state the collection of PricingPlans and priceHistory.
+Maintains a list of attached Observers using a SetIObserver.
+Implements methods: attach, detach, and notify.
+The state change method, updatePlanPrice, is the core trigger that calls notify after a price change.
+Observer Subscriber Interface: IObserver
+Defines the update subject: ISubject: void method, which all concrete observers must implement to receive notifications.
+Concrete Observers: These classes represent the diverse systems and entities that need to react to a price change.
+Customer: Checks if they are subscribed to the changed plan and, if so, sends notifications via their preferred channels e.g., Email, Push.
+AdminDashboard: Logs the price change event for internal monitoring/analytics and displays a new alert.
+BillingSystem: Processes the update by modifying invoice templates and scheduling future billing/renewal price changes.
+EmailMarketingSystem: Automatically creates a targeted marketing campaign e.g., a Price Drop Announcement or Price Increase Notification based on the change.
+
+Advantage: Decoupled and Scalable Event Handling
+
+Using the Observer Design Pattern in this scenario provides significant advantages:
+
+Loose Coupling: The PricingManager Subject does not need to know the specific details or methods of the Customer, AdminDashboard, BillingSystem, or EmailMarketingSystem Observers. It only interacts with them through the generic IObserver interfaces update method. This makes the system easy to maintain.
+
+Scalability and Flexibility: New dependent systems e.g., a Fraud Detection System, an Audit Log Service can be added simply by creating a new ConcreteObserver class and calling pricingManager.attach newObserver. The PricingManager code itself doesn't need to be modified adhering to the OpenClosed Principle.
+
+Automatic Propagation: Any change in the price or features of a plan automatically triggers the necessary updates in all relevant systems without manual coordination, ensuring data consistency across the entire SaaS platform.
+
+Targeted Updates: Customers, in particular, only process the notification if they are actively subscribed to the plan that changed, preventing unnecessary processing for non-affected users.
+
+Output Explanation
+
+The output clearly demonstrates the lifecycle and execution of the Observer pattern through four test cases:
+
+Setup Phase:
+The PricingManager and various PricingPlans are initialized.
+Three Customers and three internal systems AdminDashboard, BillingSystem, EmailMarketing are created as Observers.
+All six Observers are successfully attached to the PricingManager.
+
+Test Case 1 Price Increase:
+PricingManager.updatePlanPrice PLAN_PRO, 34.99, ... is called.
+The PricingManager logs the price change and calls notify, announcing it is Notifying 6 observers...
+Alice Johnson and Charlie Brown subscribed to PLAN_PRO receive the notification and simulate sending emails. Alice also sends a PUSH notification.
+Bob Smith subscribed to PLAN_BASIC is silently skipped by his update method, as the change does not affect his plan.
+The AdminDashboard, BillingSystem, and EmailMarketing all process the update, logging analytics, scheduling updates, and queuing an PRICE INCREASE NOTIFICATION campaign, respectively.
+
+Test Case 2 Price Decrease:
+PricingManager.updatePlanPrice PLAN_BASIC, 7.99, ... is called.
+This time, Bob Smith is notified as he is subscribed to the PLAN_BASIC, and he simulates sending an Email and SMS.
+The EmailMarketing system detects the price decrease and queues a PRICE DROP ANNOUNCEMENT campaign instead of a notification.
+
+Test Case 3 Detach Observer:
+pricingManager.detach customer2 is called, successfully removing Bob Smith from the active list of observers.
+
+Test Case 4 Update After Detach:
+PricingManager.updatePlanPrice PLAN_ENTERPRISE, 89.99, ... is called.
+The PricingManager now correctly reports Notifying 5 observers..., showing that Bob Smith is no longer in the notification loop.
+Crucially, since no customer in the example is subscribed to the PLAN_ENTERPRISE, only the internal systems AdminDashboard, BillingSystem, EmailMarketing receive and process the update.
+
+Summary: The final summary confirms the counts: 3 total price changes were processed, and 5 Observers remained active after the detachment of one.

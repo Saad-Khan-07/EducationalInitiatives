@@ -1,0 +1,5 @@
+[INFO] 2025-10-02T10:42:32.333Z - Application startup sequence initiated.
+[INFO] 2025-10-02T10:42:32.334Z - ScheduleManager singleton instance created
+[INFO] 2025-10-02T10:42:32.335Z - Observer attached | Meta: {"totalObservers":1}
+[INFO] 2025-10-02T10:42:32.335Z - Observer attached | Meta: {"totalObservers":2}
+[INFO] 2025-10-02T10:42:32.335Z - Console Interface initialized and Observers attached.

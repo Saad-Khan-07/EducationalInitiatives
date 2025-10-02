@@ -1,0 +1,56 @@
+State Design Pattern Documentation
+
+State Design Pattern
+
+The State Design Pattern allows an object to alter its behavior when its internal state changes. The object appears to change its class. It achieves this by moving all state-specific behavior into separate state classes, making the context clean and the state transitions explicit and manageable.
+
+Adapted Example: Automated Learning Module Workflow
+
+The TypeScript code implements the State pattern to control the lifecycle of a LearningModule Context for a student.
+
+Key components and their roles:
+
+Context: LearningModule
+Holds the reference to the current state ILearningModuleState and delegates all state-dependent requests to it.
+It also manages the actual data like lessons, assessment details, and progress.
+It implements the setState method to transition between states.
+State Interface: ILearningModuleState
+Defines the common interface for all concrete states e.g., start, pause, resume, complete.
+Concrete States: These classes implement the state-specific behavior and define valid transitions.
+NotStartedState: Allows only the start action, transitioning to IN_PROGRESS. All other actions are invalid.
+InProgressState: Allows lesson completion, pausing transitioning to PAUSED, or completing all lessons to transition to UNDER_ASSESSMENT.
+PausedState: Allows only the resume action, transitioning back to IN_PROGRESS.
+UnderAssessmentState: Allows taking the assessment, which transitions the module to COMPLETED or FAILED based on the score/attempts.
+CompletedState: Prevents most actions e.g., start, pause, complete, but allows resetting the module to NOT_STARTED for a retake.
+FailedState: Prevents most actions, requiring a reset to NOT_STARTED to enable a retry path.
+
+Advantage: Clean and Maintainable State Management
+
+Using the State Design Pattern in this educational application offers significant benefits:
+
+Centralized State Logic: All logic related to a specific status e.g., what happens when you try to pause a completed module is isolated within the corresponding state class e.g., CompletedState. This removes complex if/else or switch blocks from the main LearningModule class.
+
+Clear Transitions: The flow of the module is explicit. Transitions are managed within the state classes themselves e.g., NotStartedState sets the context to InProgressState, ensuring that invalid state changes cannot occur.
+
+OpenClosed Principle Adherence: If a new state is required e.g., PeerReviewState, a new class is simply created implementing ILearningModuleState, and the existing LearningModule Context does not need to be modified.
+
+Simplified Context: The LearningModule Context is cleaner and easier to read, focusing only on the data and delegating behavior to the current state object.
+
+Output Explanation
+
+The output clearly tracks the life cycle of two separate LearningModule instances through various state transitions:
+
+John Does Module Success Path:
+The module begins in the NOT_STARTED state.
+Test Case 1 transitions it to IN_PROGRESS via start.
+Test Cases 3 and 4 show valid transitions between IN_PROGRESS → PAUSED → IN_PROGRESS.
+Test Case 5 and 6 confirm all lessons are completed, triggering the transition to UNDER_ASSESSMENT.
+Test Cases 7, 8, and 9 demonstrate the multi-attempt assessment logic. Two failures are handled while remaining in UNDER_ASSESSMENT, and the final pass triggers the transition to COMPLETED.
+Test Case 10 confirms that attempts to start, pause, or complete the module while in the COMPLETED state are correctly blocked by the CompletedState.
+The State History section explicitly lists the chronological transitions, validating the implementation flow.
+
+Jane Smiths Module Failure Path:
+Test Case 11 creates a new module and quickly moves it to UNDER_ASSESSMENT.
+The student fails three consecutive assessment attempts.
+Upon the third failure, the system detects maximum attempts reached, and the UnderAssessmentState correctly forces the transition to the FAILED state.
+The final reset operation correctly transitions the FAILED module back to the NOT_STARTED state, allowing the student to begin the process again. This confirms that the FAILED state only allows the reset action.

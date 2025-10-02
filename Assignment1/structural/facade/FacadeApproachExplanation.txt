@@ -1,0 +1,47 @@
+Facade Design Pattern Documentation
+
+Facade Design Pattern
+
+The Facade Design Pattern provides a unified interface to a set of interfaces in a subsystem. It defines a higher-level interface that makes the subsystem easier to use by hiding the complexity of how the multiple interdependent classes work together. The Facade simplifies the client's interaction without hiding the original subsystems from direct use if needed.
+
+Adapted Example: User Login Orchestration
+
+The TypeScript code implements the Facade pattern using the LoginFacade class to orchestrate the complex process of user authentication.
+
+Key components and their roles:
+
+Facade: LoginFacade
+This is the single entry point for the client (e.g., a web front-end) to initiate the login process using a simple login(username, password, ...) method.
+It hides the complexity of 6 underlying subsystems, managing their order of execution, error handling, and data flow.
+Subsystems (Complex Classes):
+UserRepository: Handles finding the user and updating their status (e.g., failed attempts).
+AuthenticationService: Handles credential validation and token generation.
+AccountSecurityManager: Manages security policies like checking the account lock status and recording failed attempts.
+SessionManager: Creates and manages the active user session.
+ActivityLogger: Records all login attempts and security events.
+NotificationService: Sends notifications to the user (e.g., successful login or account lock).
+Method Orchestration: The login method within the Facade orchestrates the sequence: Find user -> Check lock status -> Validate credentials -> Handle security/lockout -> Generate token -> Create session -> Log activity -> Send notification.
+
+Advantage: Simplification and Decoupling
+
+Using the Facade Design Pattern for the login process provides significant advantages:
+
+Simplification: The client only calls one method, login(...), instead of manually calling and coordinating six different subsystem classes in the correct order, which would be error-prone.
+
+Decoupling: The client is completely decoupled from the subsystem implementation details. If the system later adds another subsystem e.g., a TwoFactorAuthService, only the LoginFacade needs modification; the client code remains unchanged.
+
+Enhanced Security: The Facade enforces a necessary workflow, ensuring that security steps like checking the account lock status and recording failed attempts are never accidentally skipped by the client.
+
+Testability: The Facade makes the overall login process easier to test as a single unit, and the underlying subsystems can be tested in isolation.
+
+Output Explanation
+
+The output clearly demonstrates the orchestration of the Facade across four test cases:
+
+Test Case 1 (Successful Login): The Facade sequentially calls every subsystem: UserRepository finds the user, AccountSecurityManager confirms it is active, AuthenticationService validates credentials, SecurityManager resets attempts, a token is generated, a session is created, ActivityLogger records success, and NotificationService sends an email. The final result is a successful status with a token.
+
+Test Case 2 (Failed Login - Password): The process stops at AuthenticationService. Since credentials fail, the Facade calls AccountSecurityManager.handleFailedLogin and then UserRepository.updateUser to record the attempt. The process ends early without session creation, correctly returning an error message.
+
+Test Case 3 (Account Lock): The Facade demonstrates the security logic built into the orchestration. After the third failed attempt, the AccountSecurityManager locks the account. The Facade detects this and triggers the NotificationService to send an account locked email, showcasing the seamless coordination between security and communication subsystems.
+
+Test Case 4 (Locked Account Access): The Facade's first security check, checkAccountLockStatus, immediately detects the locked state and returns the failure message before even attempting credential validation. The ActivityLogger records the SECURITY - LOCKED_ACCOUNT_ACCESS_ATTEMPT event, proving the Facade enforces the security workflow.

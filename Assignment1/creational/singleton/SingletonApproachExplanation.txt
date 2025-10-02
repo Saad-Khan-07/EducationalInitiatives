@@ -1,0 +1,46 @@
+Singleton Design Pattern Documentation
+
+Singleton Design Pattern
+
+The Singleton Design Pattern ensures that a class has only one instance and provides a global point of access to that instance. It guarantees that regardless of how many times the client code attempts to create the object, it will always receive the exact same instance, which is crucial for managing resources or maintaining global state.
+
+Adapted Example: Employee Report System Administrator
+
+The TypeScript code implements the Singleton pattern for the Administrator class, which manages the entire Employee Report System.
+
+Key components and their roles:
+
+Singleton Class: Administrator
+This class represents the sole controller of the Employee Report System, responsible for employee data and report generation/storage.
+Private Constructor: The constructor is private, Administrator(adminName), preventing clients from using the new keyword to create direct instances.
+Static Instance Variable: A private static variable, Administrator.instance, holds the single instance of the class. It is initialized to null.
+Global Access Method: The public static method, Administrator.getInstance(adminName), is the only way to get the instance. It checks if an instance already exists; if not, it creates it. If it does exist, it returns the existing instance, ignoring the adminName parameter passed in subsequent calls.
+Managed Resources: The Administrator holds the global state, specifically the collections of employees and reports, which are necessary for the entire system to function consistently.
+
+Advantage: Consistent Global State Management
+
+Using the Singleton Design Pattern for the Administrator in this HR application provides critical benefits:
+
+Unified System Control: It guarantees that all parts of the application e.g., different components trying to add employees or generate reports are using the exact same underlying data structure (the same list of employees and reports).
+
+Resource Management: It ensures that the ReportStorage and ReportGenerator components are initialized and managed only once, preventing unnecessary duplication of memory or database connections in a real-world scenario.
+
+Access Control: It provides a single, well-known point of access (Administrator.getInstance()), making it easy to audit and control how employees and reports are managed across the application.
+
+Data Integrity: By preventing multiple conflicting instances of the administration panel, the Singleton ensures data integrity across the employee records and reporting history.
+
+Output Explanation
+
+The output clearly demonstrates the guarantee of the Singleton pattern:
+
+Initialization: The first call, const admin1 = Administrator.getInstance('John Doe'), creates the single instance and sets the adminName to John Doe.
+
+Instance Verification: The second call, const admin2 = Administrator.getInstance('Jane Smith'), attempts to create a new instance with a different name.
+The output Are both admin instances same? true confirms that admin1 and admin2 are references to the same object in memory.
+The output Admin name is still: John Doe confirms that the admin name set by the first call is preserved, and the 'Jane Smith' parameter from the second call was ignored.
+
+Shared State:
+The three employees (Alice, Bob, Charlie) are added through admin1.
+The three reports are created through admin1.
+
+Access Confirmation: The final lines demonstrate the Singleton's purpose: Admin2 can see 3 employees and Admin2 can see 3 reports. This proves that both admin references share the exact same employee list and report data stored internally by the single Administrator instance.

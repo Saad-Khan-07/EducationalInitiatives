@@ -1,0 +1,47 @@
+Composite Design Pattern Documentation
+
+Composite Design Pattern
+
+The Composite Design Pattern allows you to compose objects into tree structures to represent part-whole hierarchies. It enables clients to treat individual objects (Files) and compositions of objects (Folders) uniformly. This means operations like calculating size or searching can be applied recursively across the entire structure.
+
+Adapted Example: Cloud Drive Management
+
+The TypeScript code uses the Composite pattern to model a Cloud Drive file system where folders and files are treated as interchangeable components.
+
+Key components and their roles:
+
+Component Interface: IFileSystemComponent
+Defines the common operations for both files and folders e.g., getName, getSize, display, and search. This is the key to uniform treatment.
+Leaf: File
+Represents the individual objects (files) in the hierarchy. It implements all Component methods, calculating its own getSize based on its static size property. It does not contain children.
+Composite: Folder
+Represents a composition of objects (a folder). It holds an internal collection of children (a Map<string, IFileSystemComponent>) and implements the IComposite interface with add, remove, and getChild methods.
+It implements the Component methods by delegating the request to its children and summing the results. For example, calculateTotalSize() iterates through all children and sums their sizes.
+Client: CloudDriveManager
+This class manages the root of the file system and interacts with the IFileSystemComponent interface to perform global operations e.g., displayDriveStructure() or searchDrive(). It never needs to distinguish between a File or a Folder when traversing the hierarchy.
+
+Advantage: Uniformity and Recursive Operations
+
+Using the Composite Design Pattern in this file system scenario provides several major benefits:
+
+Uniform Treatment: Client code e.g., the CloudDriveManager can interact with both a Folder and a File using the exact same IFileSystemComponent methods. You can call calculateTotalSize on the Root folder or on a specific File without changing the client logic.
+
+Recursive Structure: Operations that require traversing the hierarchy e.g., calculating the total size of a drive or recursively searching for a file are trivially implemented. The Folder class handles the recursion by calling the same method on all its children.
+
+Flexibility and Extensibility: The file system can be extended with complex nested structures to any depth without changing the base component or composite classes.
+
+Simplified Client Code: The structure management logic is encapsulated within the Folder class, keeping the CloudDriveManager code clean and focused on high-level drive operations.
+
+Output Explanation
+
+The output clearly illustrates the core principles of the Composite pattern:
+
+Structure Creation: Folders are created and nested within each other, and Files are added to the appropriate Folders. This establishes the part-whole hierarchy (Root contains Documents, Documents contains Work, Work contains Projects).
+
+Recursive Size Calculation: The Drive Structure display shows that Folder sizes are correctly aggregated. For example, the Work folder size (2.01 MB) is the sum of project_plan.xlsx and main.ts, and the Root folder size (10.61 MB) is the sum of the Documents and Pictures folders.
+
+Uniform Traversal: The displayDriveStructure operation successfully traverses the entire tree, displaying folders (Composites) and files (Leafs) in a structured, hierarchical manner, treating both types of nodes uniformly.
+
+Recursive Search: The Search Operations test shows that searching for "project" returns both the Projects folder (a Composite) and the project_plan.xlsx file (a Leaf), confirming the recursive nature of the search operation across the entire tree.
+
+Removal Consistency: After removing cover_letter.docx, the Used Space updates from 10.61 MB to 10.51 MB, and the Documents folder size is reduced, confirming that the size calculation remains consistent and recursive after structural modifications.

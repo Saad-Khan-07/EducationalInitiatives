@@ -1,0 +1,55 @@
+Prototype Design Pattern Documentation
+
+Prototype Design Pattern
+
+The Prototype Design Pattern specifies the kind of objects to create using a prototypical instance and creates new objects by cloning this prototype. It is used when object creation is expensive or complex, allowing new instances to be produced efficiently and cheaply by copying an existing instance rather than going through a full construction process.
+
+Adapted Example: 3D Furniture Application
+
+The TypeScript code implements the Prototype pattern for creating new furniture objects in a 3D application scene.
+
+Key components and their roles:
+
+Prototype Interface: ICloneable<T>
+Defines the essential method clone for duplicating an object.
+Concrete Prototypes: Chair, Table, Sofa
+Each class extends the abstract Furniture base class and implements the clone method to perform a deep copy of itself.
+The clone method ensures that all complex reference fields like Position3D, Dimensions3D, and Material are also cloned, preventing shared references between the prototype and the new instance.
+Each clone also generates a unique ID, essential for distinguishing cloned objects in the scene.
+Client/Manager: FurniturePrototypeRegistry
+Acts as the central registry holding the initial, registered prototype objects.
+The clonePrototype key method finds a prototype by its key and calls its clone method, shielding the client e.g., SceneManager from the complexity of the creation process.
+Client: SceneManager
+This manager uses the registry to clone furniture instances and then customizes their unique properties e.g., position, material, specific to the 3D scene.
+
+Advantage: Efficient Object Creation and Customization
+
+Using the Prototype Design Pattern in this 3D modeling context provides critical advantages:
+
+Efficient Instantiation: Creating complex furniture objects e.g., a Sofa with nested properties like position and material is computationally cheaper by copying the prototype object than by invoking the full constructor every time.
+
+Easy Customization: Once cloned, the new furniture object is independent of the prototype. The client can safely customize instance-specific details e.g., changing the position or material color without affecting the original prototype or other clones.
+
+Decoupled Creation: The SceneManager Client doesn't need to know the specific class name Chair, Table, or Sofa. It only interacts with the FurniturePrototypeRegistry and the generic IFurniture interface, promoting loose coupling.
+
+Deep Copy Guarantee: The implementation uses a deep clone, ensuring that changes to mutable complex members of the clone e.g., changing the material of sofa2 do not inadvertently change the same material object on sofa1 or the original prototype.
+
+Output Explanation
+
+The output demonstrates the pattern's registration, cloning, customization, and verification phases:
+
+Registration: Three base furniture types office-chair, dining-table, and modern-sofa are created and registered in the FurniturePrototypeRegistry. These are the master templates.
+
+Cloning and Customization:
+Four new items are created using clonePrototype.
+sofa1 is cloned and only its position is changed.
+sofa2 is cloned, and both its position and material are changed to 'Velvet (Navy Blue)'. This customization is only possible because the clone is a new, independent instance.
+The scene is built with 4 unique items.
+
+Scene Display: The Living Room scene successfully displays all 4 unique items with their distinct IDs, positions, and materials, confirming the clones are independent. The total cost is correctly calculated based on the price property of each clone.
+
+Deep Clone Verification:
+A test verifies the integrity of the deep clone.
+originalChair.clone creates clonedChair.
+Modifying clonedChair's position and material does not affect originalChair's state, as shown when originalChair is displayed again.
+The final checks Are they the same object? false and Do they have the same ID? false confirm that the clone operation successfully created a distinct new object, fulfilling the core requirements of the Prototype pattern.
